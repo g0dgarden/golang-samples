@@ -1,3 +1,5 @@
+// see: https://gist.github.com/lestrrat/c9b78369cf9b9c5d9b0c909ed1e2452e
+
 package main
 
 import (
@@ -7,6 +9,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"runtime"
 	"sync"
 	"syscall"
 	"time"
@@ -27,12 +30,11 @@ func main() {
 
 	d := NewDispatcher(3)
 	for i := 0; i < 100; i++ {
-		u := fmt.Sprintf("http://minna-no-go/%d", i)
+		u := fmt.Sprintf("Goroutine:%d, http://www.lancers.jp/work/detail/%d", runtime.NumGoroutine(), i)
 		d.Work(ctx, func(ctx context.Context) {
 			log.Printf("start processing %s", u)
-			// 本当だったらここでURL取りに行くとかするけど、ダミーだから
-			// 適当な時間待ちます
-			t := time.NewTimer(time.Duration(rand.Intn(5)) * time.Second)
+
+			t := time.NewTimer(time.Duration(rand.Intn(10)) * time.Second)
 			defer t.Stop()
 
 			select {
@@ -40,7 +42,7 @@ func main() {
 				log.Printf("cancel work func %s", u)
 				return
 			case <-t.C:
-				log.Printf("done processing %s", u)
+				log.Printf("done processing  %s", u)
 				return
 			}
 		})
@@ -80,7 +82,7 @@ func (d *Dispatcher) work(ctx context.Context, proc WorkFunc) {
 		log.Printf("cancel work")
 		return
 	case d.sem <- struct{}{}:
-	// got semaphore
+		// got semaphore
 		defer func() { <-d.sem }()
 	}
 
