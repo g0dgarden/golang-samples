@@ -1,7 +1,7 @@
 // Goのインターフェースの理解をするうえで、下記のブログが丁寧で分かりやすかったため写経させてもらっています。
 // See: http://jxck.hatenablog.com/entry/20130325/1364251563
 
-package interfacesample
+package main
 
 import (
 	"encoding/json"
