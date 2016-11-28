@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+func main() {
+	Run()
+}
+
 func Run() {
 	fmt.Println("<----------main1:---------->")
 	main1()
